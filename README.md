@@ -5,22 +5,6 @@
 **Building an isolated virtual lab for penetration testing and ethical hacking practice**
 </div>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Skill-Cybersecurity-404040?style=flat-square&labelColor=C00000" />
-  <img src="https://img.shields.io/badge/Ver-Virtualbox%20v7.2-0070C0?style=flat-square&labelColor=000000" />
-  <img src="https://img.shields.io/badge/Kali%20Linux-v2026.2-E87500?style=flat-square&labelColor=000000&logo=kalilinux&logoColor=white" />
-  <img src="https://img.shields.io/badge/Skill-Linux-404040?style=flat-square&labelColor=C00000" />
-  <img src="https://img.shields.io/badge/Network-10.0.0.0%2F24-238F89?style=flat-square&labelColor=000000" />
-  <img src="https://img.shields.io/badge/Penetration%20Testing-C00000?style=flat-square&labelColor=000000&logo=kalilinux&logoColor=white" />
-  <img src="https://img.shields.io/badge/Skill-Virtualization-404040?style=flat-square&labelColor=C00000" />
-  <img src="https://img.shields.io/badge/GitHub-404040?style=flat-square&labelColor=0070C0&logo=github&logoColor=white" />
-  <img src="https://img.shields.io/badge/Kali%20Linux-404040?style=flat-square&labelColor=C00000&logo=kalilinux&logoColor=white" />
-  <img src="https://img.shields.io/badge/NetworkWalks-404040?style=flat-square&labelColor=C00000" />
-  <img src="https://img.shields.io/badge/Ethical%20Hacking-E87500?style=flat-square&labelColor=000000&logo=kalilinux&logoColor=white" />
-  <img src="https://img.shields.io/badge/Waqas%20Karim%20CCIE-C00000?style=flat-square" />
-</p>
-
----
 
 ## 📌 Project Overview
 
@@ -214,80 +198,107 @@ Gateway:
 DNS:
 8.8.8.8
 ```
+# Problems Encountered & Solutions
 
----
+During the setup and configuration of my Kali Linux virtual machine using VirtualBox, I encountered several technical problems. These challenges helped me understand virtualization, network configuration, and troubleshooting.
 
-# 🐞 Problems Encountered & Solutions
+## Problem 1: Internet Connectivity Failure After Static IP Configuration
 
-Documenting problems is an important part of the project.
+While configuring the IPv4 settings of my Kali Linux virtual machine, I manually assigned a static IP address, subnet mask, default gateway, and DNS server.
 
-## Problem 1. Internet Connectivity After Static IP Configuration
+However, after saving the configuration, I discovered that the internet connection was not working properly.
 
-After manually configuring the IPv4 settings, Internet connectivity may fail depending on the Kali/NetworkManager configuration.
+### Investigation
 
-One workaround used during this lab was:
+I used the following Linux commands to investigate the problem:
+
+```bash
+ip route
+```
+
+```bash
+ip addr
+```
+
+The commands revealed that my network interface (`eth0`) had two IPv4 addresses:
+
+- Static IP address: `10.0.0.2/24`
+- DHCP-assigned IP address: `10.0.2.15/24`
+- Default gateway: `10.0.0.1`
+
+This indicated that both static and DHCP addressing were active on the same network interface, with addresses belonging to different subnets.
+
+### Solution
+
+One workaround used during the troubleshooting process was to execute:
 
 ```bash
 sudo nmcli connection modify "Wired connection 1" ipv4.dad-timeout 0
 ```
 
-The network connection was then restarted/rebooted and connectivity was tested again.
+After applying the configuration, I restarted the network connection and tested internet connectivity again.
 
-> **Important:** Network interface and connection names may differ between systems. Students should first identify their actual connection name before running an `nmcli` command.
+**Important:** The actual NetworkManager connection name may differ. I must identify the correct connection name before executing the command.
 
----
-
-## Problem 2. VirtualBox VT-x / Virtualization Error
-
-The VM initially failed to start because hardware virtualization was disabled in the system firmware/BIOS.
-
-The issue was resolved by:
-
-1. Restarting the computer.
-2. Entering BIOS/UEFI settings.
-3. Enabling Intel VT-x / hardware virtualization.
-4. Saving the configuration.
-5. Restarting the computer.
-6. Starting the Kali VM again.
-
-After enabling virtualization, the VM started successfully.
-
+I also learned that static IP configuration must match the actual VirtualBox network mode, subnet, and gateway.
 
 ---
 
-# 💡 What I Learned
+## Problem 2: VirtualBox VT-x / Hardware Virtualization Error
 
-Through this project, I learned how to create and configure a virtual environment for cybersecurity practice.
+When I initially attempted to start my Kali Linux virtual machine, VirtualBox displayed an error indicating that hardware virtualization was unavailable or disabled.
 
-The most important concepts I learned include:
+### Cause
+
+Hardware virtualization (Intel VT-x) was disabled in my computer's BIOS/UEFI firmware.
+
+### Solution
+
+I resolved the problem by following these steps:
+
+1. Restarted my computer.
+2. Entered the BIOS/UEFI settings.
+3. Located the virtualization settings.
+4. Enabled Intel VT-x (hardware virtualization).
+5. Saved the changes and restarted the computer.
+6. Opened VirtualBox and started the Kali Linux virtual machine again.
+
+After enabling hardware virtualization, the virtual machine started successfully.
+
+---
+
+# What I Learned
+
+Through troubleshooting these problems, I gained practical knowledge of virtualization and network configuration.
 
 ### 1. NAT vs NAT Network
 
-A standard NAT configuration and a NAT Network serve different purposes.
+I learned that standard NAT and NAT Network are different VirtualBox networking modes.
 
-A NAT Network allows multiple VMs connected to the same virtual network to communicate with one another while providing network address translation for external connectivity.
-
-This makes it useful for building a multi-machine cybersecurity laboratory.
+NAT provides internet access to a virtual machine, while NAT Network allows multiple virtual machines connected to the same virtual network to communicate with one another and access external networks.
 
 ### 2. Virtual Machine Networking
 
-I learned how VirtualBox virtual network adapters connect virtual machines to different types of networks and how network configuration affects communication between machines.
+I learned how VirtualBox network adapters connect virtual machines to different types of networks and how the selected network mode affects communication.
 
 ### 3. Static IP Configuration
 
-I learned how to configure and verify IPv4 addressing, subnet masks, gateways, and DNS settings in Kali Linux.
+I gained practical experience configuring IPv4 addresses, subnet masks, default gateways, and DNS servers in Kali Linux.
 
-### 4. VM Snapshots
+### 4. Network Troubleshooting
 
-I learned that a clean snapshot should be created **before performing risky or experimental activities**.
+I learned how to use Linux networking commands such as `ip addr`, `ip route`, and `nmcli` to inspect network configurations and troubleshoot connectivity problems.
 
-This provides a known-good recovery point for future cybersecurity exercises.
+### 5. VM Snapshots
 
-### 5. Documentation
+I learned the importance of creating a clean virtual machine snapshot before performing risky experiments or making major configuration changes.
 
-I learned that documenting commands, configuration, screenshots, problems, and solutions is an important part of a professional cybersecurity project.
+Snapshots provide a recovery point that allows me to restore the virtual machine to a previous working state.
 
----
+### Conclusion
+
+Although I encountered technical challenges during the setup process, troubleshooting them improved my understanding of Linux networking, VirtualBox configuration, and virtualization. I also learned the importance of documenting errors, investigating their causes, and testing solutions rather than making random configuration changes.
+
 
 # 🔐 Security & Ethical Use
 
@@ -301,17 +312,10 @@ This laboratory is intended strictly for education purposes only.
 - **VirtualBox:** [https://virtualbox.org/wiki/Downloads](https://virtualbox.org/wiki/Downloads)
 - **Kali Linux:** [https://kali.org/get-kali](https://kali.org/get-kali)
 
----
-
-# 👤 Author
-
-**Waqas Karim**\
-Cybersecurity Professional B082
-
 LinkedIn: [https://www.linkedin.com/in/waqaskarim/](https://www.linkedin.com/in/waqaskarim/)
 
 ---
 
 ## 📌 Project Information
 
-**Program Name:** Cybersecurity at Networkwalks | **Week:** 01 | **Project:** Cybersecurity & Pentesting Lab Setup | **Repository:** GitHub
+**Program Name:** Cybersecurity Lab Setup | **Project:** Cybersecurity & Pentesting Lab Setup | **Repository:** GitHub
