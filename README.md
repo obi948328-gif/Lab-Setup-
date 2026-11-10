@@ -312,7 +312,9 @@ This laboratory is intended strictly for education purposes only.
 - **VirtualBox:** [https://virtualbox.org/wiki/Downloads](https://virtualbox.org/wiki/Downloads)
 - **Kali Linux:** [https://kali.org/get-kali](https://kali.org/get-kali)
 
-LinkedIn: [https://www.linkedin.com/in/waqaskarim/](https://www.linkedin.com/in/waqaskarim/)
+LinkedIn:www.linkedin.com/in/obi-chukwuemerie-samuel-357807406
+
+
 
 ---
 
